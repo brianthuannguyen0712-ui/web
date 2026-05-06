@@ -1,0 +1,399 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--sky:#38bdf8;--sky-dark:#0ea5e9;--sky-dim:rgba(56,189,248,0.13);--sky-border:rgba(56,189,248,0.3)}
+  body,#app{font-family:'Comfortaa',sans-serif;background:transparent;color:#38bdf8}
+  #app{padding:1.5rem 0.5rem;min-height:600px}
+  .screen{display:none}.screen.active{display:block}
+  h1{font-size:22px;font-weight:700;color:#38bdf8;text-align:center;margin-bottom:6px}
+  .subtitle{font-size:13px;color:rgba(56,189,248,0.65);text-align:center;margin-bottom:1.5rem}
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+  .topic-btn{background:var(--sky-dim);border:1px solid var(--sky-border);border-radius:14px;padding:14px 10px;cursor:pointer;font-family:'Comfortaa',sans-serif;font-size:13px;color:#38bdf8;text-align:center;transition:all .2s;line-height:1.4}
+  .topic-btn:hover{background:rgba(56,189,248,0.25);border-color:#38bdf8;transform:translateY(-2px)}
+  .topic-btn .icon{font-size:22px;display:block;margin-bottom:6px}
+  .back-btn{background:transparent;border:1px solid var(--sky-border);border-radius:10px;padding:7px 16px;cursor:pointer;font-family:'Comfortaa',sans-serif;font-size:12px;color:#38bdf8;margin-bottom:1rem;transition:all .2s}
+  .back-btn:hover{background:var(--sky-dim)}
+  .tab-row{display:flex;gap:8px;margin-bottom:1.2rem}
+  .tab{flex:1;padding:9px;border:1px solid var(--sky-border);border-radius:10px;background:transparent;font-family:'Comfortaa',sans-serif;font-size:12px;color:rgba(56,189,248,0.6);cursor:pointer;transition:all .2s}
+  .tab.active{background:var(--sky-dim);color:#38bdf8;border-color:#38bdf8}
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+  .vocab-card{background:var(--sky-dim);border:1px solid var(--sky-border);border-radius:12px;padding:12px 10px;cursor:pointer;transition:all .2s}
+  .vocab-card:hover{background:rgba(56,189,248,0.22);transform:translateY(-1px)}
+  .vocab-card .word{font-size:13px;font-weight:700;color:#38bdf8;margin-bottom:3px}
+  .vocab-card .pron{font-size:10px;color:rgba(56,189,248,0.55);margin-bottom:4px}
+  .vocab-card .def{font-size:11px;color:rgba(56,189,248,0.8);line-height:1.4}
+  .vocab-card.flipped .word{color:rgba(56,189,248,0.5);font-size:11px;font-weight:400}
+  .vocab-card.flipped .def{font-size:13px;font-weight:700;color:#38bdf8}
+  .q-count{font-size:12px;color:rgba(56,189,248,0.55);text-align:right;margin-bottom:0.8rem}
+  .progress-bar{width:100%;height:4px;background:rgba(56,189,248,0.15);border-radius:4px;margin-bottom:1.2rem;overflow:hidden}
+  .progress-fill{height:100%;background:#38bdf8;border-radius:4px;transition:width .4s}
+  .question-box{background:var(--sky-dim);border:1px solid var(--sky-border);border-radius:14px;padding:1.2rem;margin-bottom:1rem}
+  .q-label{font-size:11px;color:rgba(56,189,248,0.5);margin-bottom:8px}
+  .q-text{font-size:15px;font-weight:700;color:#38bdf8;line-height:1.5}
+  .q-highlight{color:#fff;background:#38bdf8;padding:1px 6px;border-radius:6px}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+  .opt-btn{background:var(--sky-dim);border:1px solid var(--sky-border);border-radius:10px;padding:12px 8px;cursor:pointer;font-family:'Comfortaa',sans-serif;font-size:12px;color:#38bdf8;text-align:center;transition:all .2s;line-height:1.4}
+  .opt-btn:hover:not([disabled]){background:rgba(56,189,248,0.22);border-color:#38bdf8}
+  .opt-btn.correct{background:rgba(56,248,130,0.15);border-color:#38f882;color:#38f882}
+  .opt-btn.wrong{background:rgba(248,56,56,0.12);border-color:#f85858;color:#f87171}
+  .opt-btn[disabled]{cursor:default}
+  .feedback{text-align:center;font-size:13px;min-height:22px;margin-bottom:0.8rem;font-weight:700}
+  .feedback.ok{color:#38f882}
+  .feedback.no{color:#f87171}
+  .next-btn{width:100%;background:rgba(56,189,248,0.18);border:1px solid #38bdf8;border-radius:10px;padding:11px;cursor:pointer;font-family:'Comfortaa',sans-serif;font-size:13px;font-weight:700;color:#38bdf8;transition:all .2s;display:none}
+  .next-btn:hover{background:rgba(56,189,248,0.3)}
+  .result-box{text-align:center;padding:1.5rem}
+  .score-big{font-size:48px;font-weight:700;color:#38bdf8;margin:1rem 0 0.3rem}
+  .score-label{font-size:13px;color:rgba(56,189,248,0.6);margin-bottom:1.5rem}
+  .restart-btn{background:var(--sky-dim);border:1px solid #38bdf8;border-radius:12px;padding:12px 28px;cursor:pointer;font-family:'Comfortaa',sans-serif;font-size:14px;font-weight:700;color:#38bdf8;transition:all .2s}
+  .restart-btn:hover{background:rgba(56,189,248,0.25)}
+  .star{font-size:36px;margin-bottom:0.5rem}
+</style>
+
+<div id="app">
+  <div id="screen-home" class="screen active">
+    <h1>✦ VocabBoost</h1>
+    <p class="subtitle">Chọn chủ đề để bắt đầu học từ vựng</p>
+    <div class="topic-grid" id="topic-grid"></div>
+  </div>
+
+  <div id="screen-topic" class="screen">
+    <button class="back-btn" onclick="goHome()">← Chủ đề khác</button>
+    <h1 id="topic-title"></h1>
+    <p class="subtitle" id="topic-sub"></p>
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab('vocab',this)">📖 Từ vựng</button>
+      <button class="tab" onclick="switchTab('quiz',this)">🧠 Kiểm tra</button>
+    </div>
+    <div id="tab-vocab">
+      <div class="vocab-grid" id="vocab-grid"></div>
+    </div>
+    <div id="tab-quiz" style="display:none">
+      <div class="q-count" id="q-count"></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div id="quiz-area"></div>
+    </div>
+  </div>
+
+  <div id="screen-result" class="screen">
+    <div class="result-box">
+      <div class="star" id="result-star">⭐</div>
+      <div class="score-big" id="result-score"></div>
+      <div class="score-label" id="result-label"></div>
+      <button class="restart-btn" onclick="restartQuiz()">↺ Làm lại</button>
+      <br><br>
+      <button class="back-btn" onclick="goHome()" style="display:inline-block">← Chủ đề khác</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const topics = [
+  {
+    id:'nature', icon:'🌿', name:'Nature', sub:'Thiên nhiên & Môi trường',
+    vocab:[
+      {w:'forest',p:'/ˈfɒrɪst/',d:'rừng'},
+      {w:'river',p:'/ˈrɪvər/',d:'con sông'},
+      {w:'mountain',p:'/ˈmaʊntɪn/',d:'núi'},
+      {w:'ocean',p:'/ˈoʊʃən/',d:'đại dương'},
+      {w:'valley',p:'/ˈvæli/',d:'thung lũng'},
+      {w:'waterfall',p:'/ˈwɔːtərfɔːl/',d:'thác nước'},
+      {w:'desert',p:'/ˈdezərt/',d:'sa mạc'},
+      {w:'volcano',p:'/vɒlˈkeɪnoʊ/',d:'núi lửa'},
+      {w:'glacier',p:'/ˈɡleɪʃər/',d:'sông băng'},
+      {w:'meadow',p:'/ˈmedoʊ/',d:'đồng cỏ'},
+      {w:'cave',p:'/keɪv/',d:'hang động'},
+      {w:'coral',p:'/ˈkɒrəl/',d:'san hô'},
+      {w:'breeze',p:'/briːz/',d:'làn gió nhẹ'},
+      {w:'earthquake',p:'/ˈɜːrθkweɪk/',d:'động đất'},
+      {w:'drought',p:'/draʊt/',d:'hạn hán'},
+      {w:'flood',p:'/flʌd/',d:'lũ lụt'},
+      {w:'twilight',p:'/ˈtwaɪlaɪt/',d:'hoàng hôn'},
+      {w:'horizon',p:'/həˈraɪzən/',d:'đường chân trời'},
+      {w:'canopy',p:'/ˈkænəpi/',d:'tán rừng'},
+      {w:'ecosystem',p:'/ˈiːkoʊsɪstəm/',d:'hệ sinh thái'},
+      {w:'habitat',p:'/ˈhæbɪtæt/',d:'môi trường sống'},
+      {w:'precipitation',p:'/prɪˌsɪpɪˈteɪʃən/',d:'lượng mưa'},
+      {w:'lagoon',p:'/ləˈɡuːn/',d:'đầm phá'},
+      {w:'sediment',p:'/ˈsedɪmənt/',d:'trầm tích'},
+    ],
+    questions:[
+      {q:'What do you call a large area covered with trees?',ans:'forest',opts:['ocean','forest','meadow','desert']},
+      {q:'Which word means "đại dương"?',ans:'ocean',opts:['river','valley','ocean','glacier']},
+      {q:'A _____ is formed when a large amount of water flows over a steep cliff.',ans:'waterfall',opts:['flood','waterfall','breeze','lagoon']},
+      {q:'"Hạn hán" in English is:',ans:'drought',opts:['drought','flood','earthquake','breeze']},
+      {q:'Where do fish and coral live together?',ans:'coral',opts:['cave','meadow','coral','canopy']},
+      {q:'What is the English word for "đường chân trời"?',ans:'horizon',opts:['twilight','horizon','canopy','valley']},
+      {q:'A _____ is a river of ice that moves slowly.',ans:'glacier',opts:['volcano','glacier','desert','sediment']},
+      {q:'Which word means "hệ sinh thái"?',ans:'ecosystem',opts:['habitat','ecosystem','precipitation','lagoon']},
+      {q:'"Môi trường sống" of animals is called:',ans:'habitat',opts:['habitat','canopy','meadow','sediment']},
+      {q:'A _____ erupts lava and ash.',ans:'volcano',opts:['earthquake','cave','volcano','mountain']},
+    ]
+  },
+  {
+    id:'tech', icon:'💻', name:'Technology', sub:'Công nghệ & Kỹ thuật số',
+    vocab:[
+      {w:'algorithm',p:'/ˈælɡərɪðəm/',d:'thuật toán'},
+      {w:'bandwidth',p:'/ˈbændwɪdθ/',d:'băng thông'},
+      {w:'browser',p:'/ˈbraʊzər/',d:'trình duyệt'},
+      {w:'cache',p:'/kæʃ/',d:'bộ nhớ đệm'},
+      {w:'cloud',p:'/klaʊd/',d:'đám mây (điện toán)'},
+      {w:'cursor',p:'/ˈkɜːrsər/',d:'con trỏ'},
+      {w:'database',p:'/ˈdeɪtəbeɪs/',d:'cơ sở dữ liệu'},
+      {w:'debug',p:'/ˌdiːˈbʌɡ/',d:'gỡ lỗi'},
+      {w:'encryption',p:'/ɪnˈkrɪpʃən/',d:'mã hóa'},
+      {w:'firewall',p:'/ˈfaɪərwɔːl/',d:'tường lửa'},
+      {w:'firmware',p:'/ˈfɜːrmwer/',d:'phần mềm nhúng'},
+      {w:'hardware',p:'/ˈhɑːrdwer/',d:'phần cứng'},
+      {w:'interface',p:'/ˈɪntərfeɪs/',d:'giao diện'},
+      {w:'kernel',p:'/ˈkɜːrnəl/',d:'nhân hệ điều hành'},
+      {w:'latency',p:'/ˈleɪtənsi/',d:'độ trễ'},
+      {w:'malware',p:'/ˈmælwer/',d:'phần mềm độc hại'},
+      {w:'network',p:'/ˈnetwɜːrk/',d:'mạng lưới'},
+      {w:'pixel',p:'/ˈpɪksəl/',d:'điểm ảnh'},
+      {w:'protocol',p:'/ˈproʊtəkɒl/',d:'giao thức'},
+      {w:'server',p:'/ˈsɜːrvər/',d:'máy chủ'},
+      {w:'software',p:'/ˈsɒftwer/',d:'phần mềm'},
+      {w:'upload',p:'/ˈʌploʊd/',d:'tải lên'},
+      {w:'virtual',p:'/ˈvɜːrtʃuəl/',d:'ảo, trực tuyến'},
+      {w:'wireless',p:'/ˈwaɪərləs/',d:'không dây'},
+    ],
+    questions:[
+      {q:'A set of rules for solving problems step-by-step is called:',ans:'algorithm',opts:['protocol','algorithm','kernel','cache']},
+      {q:'Which word means "phần mềm độc hại"?',ans:'malware',opts:['firmware','malware','software','hardware']},
+      {q:'"Mã hóa" dữ liệu để bảo mật gọi là:',ans:'encryption',opts:['firewall','debug','encryption','bandwidth']},
+      {q:'What stores data temporarily for faster access?',ans:'cache',opts:['database','server','cache','pixel']},
+      {q:'A _____ protects your computer from unauthorized access.',ans:'firewall',opts:['firewall','network','cursor','protocol']},
+      {q:'Which word means "độ trễ"?',ans:'latency',opts:['bandwidth','latency','wireless','upload']},
+      {q:'"Cơ sở dữ liệu" in English is:',ans:'database',opts:['interface','database','kernel','server']},
+      {q:'What do you call the physical components of a computer?',ans:'hardware',opts:['software','firmware','hardware','virtual']},
+      {q:'Removing bugs from code is called:',ans:'debug',opts:['upload','debug','pixel','browser']},
+      {q:'A _____ hosts websites and data for users.',ans:'server',opts:['server','cursor','cloud','network']},
+    ]
+  },
+  {
+    id:'food', icon:'🍜', name:'Food & Cuisine', sub:'Ẩm thực & Nấu ăn',
+    vocab:[
+      {w:'appetizer',p:'/ˈæpɪtaɪzər/',d:'món khai vị'},
+      {w:'marinade',p:'/ˈmærɪneɪd/',d:'nước ướp'},
+      {w:'sauté',p:'/sɔːˈteɪ/',d:'xào nhanh'},
+      {w:'garnish',p:'/ˈɡɑːrnɪʃ/',d:'trang trí món ăn'},
+      {w:'simmer',p:'/ˈsɪmər/',d:'đun liu riu'},
+      {w:'ferment',p:'/fɜːrˈment/',d:'lên men'},
+      {w:'cuisine',p:'/kwɪˈziːn/',d:'ẩm thực'},
+      {w:'texture',p:'/ˈtekstʃər/',d:'kết cấu (thực phẩm)'},
+      {w:'pungent',p:'/ˈpʌndʒənt/',d:'nồng, hắc'},
+      {w:'savory',p:'/ˈseɪvəri/',d:'đậm đà'},
+      {w:'bland',p:'/blænd/',d:'nhạt nhẽo'},
+      {w:'recipe',p:'/ˈresɪpi/',d:'công thức nấu ăn'},
+      {w:'ingredient',p:'/ɪnˈɡriːdiənt/',d:'nguyên liệu'},
+      {w:'portion',p:'/ˈpɔːrʃən/',d:'khẩu phần'},
+      {w:'seasoning',p:'/ˈsiːzənɪŋ/',d:'gia vị'},
+      {w:'grilled',p:'/ɡrɪld/',d:'nướng'},
+      {w:'steamed',p:'/stiːmd/',d:'hấp'},
+      {w:'broth',p:'/brɒθ/',d:'nước dùng'},
+      {w:'culinary',p:'/ˈkʌlɪneri/',d:'thuộc về nấu ăn'},
+      {w:'palate',p:'/ˈpælɪt/',d:'khẩu vị'},
+      {w:'umami',p:'/uːˈmɑːmi/',d:'vị ngon'},
+      {w:'diced',p:'/daɪst/',d:'cắt hạt lựu'},
+      {w:'tenderize',p:'/ˈtendəraɪz/',d:'làm mềm thịt'},
+      {w:'garnishing',p:'/ˈɡɑːrnɪʃɪŋ/',d:'trang trí món ăn'},
+    ],
+    questions:[
+      {q:'The first small dish served before the main course is:',ans:'appetizer',opts:['appetizer','portion','broth','garnish']},
+      {q:'Which word means "ẩm thực"?',ans:'cuisine',opts:['recipe','culinary','cuisine','palate']},
+      {q:'To cook food in a small amount of hot oil quickly:',ans:'sauté',opts:['simmer','sauté','steamed','ferment']},
+      {q:'"Gia vị" in English is:',ans:'seasoning',opts:['ingredient','texture','seasoning','marinade']},
+      {q:'Which word describes food that has very little flavor?',ans:'bland',opts:['pungent','savory','umami','bland']},
+      {q:'A liquid in which meat is soaked to add flavor is called:',ans:'marinade',opts:['broth','marinade','recipe','portion']},
+      {q:'Which word means "kết cấu"?',ans:'texture',opts:['texture','culinary','palate','diced']},
+      {q:'"Nước dùng" used for soups is called:',ans:'broth',opts:['broth','simmer','tenderize','steamed']},
+      {q:'To make food go through a biological change, like yogurt, is to:',ans:'ferment',opts:['ferment','garnish','grilled','sauté']},
+      {q:'The fifth basic taste beyond sweet, sour, salty, and bitter is:',ans:'umami',opts:['savory','pungent','umami','bland']},
+    ]
+  },
+  {
+    id:'emotion', icon:'🫀', name:'Emotions', sub:'Cảm xúc & Tâm trạng',
+    vocab:[
+      {w:'melancholy',p:'/ˈmelənkɒli/',d:'buồn sầu'},
+      {w:'euphoria',p:'/juːˈfɔːriə/',d:'phấn khích tột độ'},
+      {w:'nostalgia',p:'/nɒˈstældʒə/',d:'hoài niệm'},
+      {w:'anxious',p:'/ˈæŋkʃəs/',d:'lo lắng'},
+      {w:'elated',p:'/ɪˈleɪtɪd/',d:'vui mừng phấn khởi'},
+      {w:'gloomy',p:'/ˈɡluːmi/',d:'ảm đạm, u ám'},
+      {w:'content',p:'/kənˈtent/',d:'hài lòng'},
+      {w:'frustrated',p:'/ˈfrʌstreɪtɪd/',d:'thất vọng, bực bội'},
+      {w:'overwhelmed',p:'/ˌoʊvərˈwelmd/',d:'bị choáng ngợp'},
+      {w:'serene',p:'/səˈriːn/',d:'thanh thản, yên bình'},
+      {w:'envious',p:'/ˈenviəs/',d:'ghen tị'},
+      {w:'mortified',p:'/ˈmɔːrtɪfaɪd/',d:'xấu hổ tột cùng'},
+      {w:'bewildered',p:'/bɪˈwɪldərd/',d:'bối rối'},
+      {w:'apprehensive',p:'/ˌæprɪˈhensɪv/',d:'lo ngại'},
+      {w:'thrilled',p:'/θrɪld/',d:'hồi hộp phấn khích'},
+      {w:'devastated',p:'/ˈdevəsteɪtɪd/',d:'tan nát lòng'},
+      {w:'empathy',p:'/ˈempəθi/',d:'sự đồng cảm'},
+      {w:'remorse',p:'/rɪˈmɔːrs/',d:'sự hối hận'},
+      {w:'longing',p:'/ˈlɒŋɪŋ/',d:'sự khao khát, nhớ nhung'},
+      {w:'indifferent',p:'/ɪnˈdɪfrənt/',d:'thờ ơ'},
+      {w:'jubilant',p:'/ˈdʒuːbɪlənt/',d:'hân hoan'},
+      {w:'sullen',p:'/ˈsʌlən/',d:'cau có, ủ rũ'},
+      {w:'wistful',p:'/ˈwɪstfəl/',d:'bâng khuâng'},
+      {w:'conflicted',p:'/kənˈflɪktɪd/',d:'mâu thuẫn nội tâm'},
+    ],
+    questions:[
+      {q:'A deep sadness often without a clear reason is called:',ans:'melancholy',opts:['melancholy','gloomy','remorse','longing']},
+      {q:'Which word means "sự đồng cảm"?',ans:'empathy',opts:['empathy','envious','content','serene']},
+      {q:'Feeling extremely happy and excited:',ans:'euphoria',opts:['thrilled','elated','euphoria','jubilant']},
+      {q:'"Hối hận" in English is:',ans:'remorse',opts:['remorse','apprehensive','indifferent','frustrated']},
+      {q:'When you feel a longing for the past, you feel:',ans:'nostalgia',opts:['wistful','longing','nostalgia','melancholy']},
+      {q:'Which word means "thờ ơ"?',ans:'indifferent',opts:['sullen','indifferent','conflicted','bewildered']},
+      {q:'Being too shocked or stressed to cope means you feel:',ans:'overwhelmed',opts:['devastated','overwhelmed','anxious','mortified']},
+      {q:'Which word means "thanh thản"?',ans:'serene',opts:['serene','content','elated','wistful']},
+      {q:'Feeling deep embarrassment or shame:',ans:'mortified',opts:['mortified','sullen','frustrated','conflicted']},
+      {q:'Which word means "hân hoan"?',ans:'jubilant',opts:['thrilled','jubilant','elated','euphoria']},
+    ]
+  }
+];
+
+let currentTopic = null;
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let currentTab = 'vocab';
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome(){show('screen-home')}
+
+function shuffle(arr){return [...arr].sort(()=>Math.random()-0.5)}
+
+function renderTopics(){
+  const g = document.getElementById('topic-grid');
+  g.innerHTML = topics.map(t=>`
+    <button class="topic-btn" onclick="openTopic('${t.id}')">
+      <span class="icon">${t.icon}</span>
+      ${t.name}<br>
+      <span style="font-size:10px;opacity:.6">${t.sub}</span>
+    </button>`).join('');
+}
+
+function openTopic(id){
+  currentTopic = topics.find(t=>t.id===id);
+  document.getElementById('topic-title').textContent = currentTopic.icon+' '+currentTopic.name;
+  document.getElementById('topic-sub').textContent = currentTopic.sub;
+  switchTab('vocab', document.querySelectorAll('.tab')[0]);
+  show('screen-topic');
+}
+
+function switchTab(tab, btn){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-vocab').style.display = tab==='vocab'?'block':'none';
+  document.getElementById('tab-quiz').style.display = tab==='quiz'?'block':'none';
+  if(tab==='vocab') renderVocab();
+  else startQuiz();
+}
+
+let flipped = {};
+function renderVocab(){
+  flipped = {};
+  const g = document.getElementById('vocab-grid');
+  g.innerHTML = currentTopic.vocab.map((v,i)=>`
+    <div class="vocab-card" id="vc${i}" onclick="flipCard(${i})">
+      <div class="word">${v.w}</div>
+      <div class="pron">${v.p}</div>
+      <div class="def">${v.d}</div>
+    </div>`).join('');
+}
+
+function flipCard(i){
+  const v = currentTopic.vocab[i];
+  const card = document.getElementById('vc'+i);
+  flipped[i] = !flipped[i];
+  if(flipped[i]){
+    card.classList.add('flipped');
+    card.innerHTML = `<div class="word">${v.d}</div><div class="pron" style="opacity:.5">nhấn để lật lại</div><div class="def">${v.w}</div>`;
+  } else {
+    card.classList.remove('flipped');
+    card.innerHTML = `<div class="word">${v.w}</div><div class="pron">${v.p}</div><div class="def">${v.d}</div>`;
+  }
+}
+
+function startQuiz(){
+  currentQ = 0; score = 0; answered = false;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const qs = currentTopic.questions;
+  if(currentQ >= qs.length){ showResult(); return; }
+  const q = qs[currentQ];
+  const total = qs.length;
+  document.getElementById('q-count').textContent = `Câu ${currentQ+1} / ${total}`;
+  document.getElementById('progress-fill').style.width = (currentQ/total*100)+'%';
+  const opts = shuffle(q.opts);
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="question-box">
+      <div class="q-label">Câu hỏi ${currentQ+1}</div>
+      <div class="q-text">${q.q}</div>
+    </div>
+    <div class="options">
+      ${opts.map(o=>`<button class="opt-btn" onclick="answer(this,'${o}','${q.ans}')">${o}</button>`).join('')}
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Tiếp theo →</button>
+  `;
+  answered = false;
+}
+
+function answer(btn, chosen, correct){
+  if(answered) return;
+  answered = true;
+  const fb = document.getElementById('feedback');
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  if(chosen===correct){
+    btn.classList.add('correct');
+    fb.textContent = '✓ Đúng rồi!'; fb.className='feedback ok';
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '✗ Sai! Đáp án: '+correct; fb.className='feedback no';
+    document.querySelectorAll('.opt-btn').forEach(b=>{
+      if(b.textContent.trim()===correct) b.classList.add('correct');
+    });
+  }
+  document.getElementById('next-btn').style.display='block';
+}
+
+function nextQ(){
+  currentQ++;
+  renderQuestion();
+}
+
+function showResult(){
+  const total = currentTopic.questions.length;
+  const pct = Math.round(score/total*100);
+  let star='⭐', msg='';
+  if(pct===100){star='🏆';msg='Hoàn hảo! Bạn thật xuất sắc!';}
+  else if(pct>=80){star='🌟';msg='Rất tốt! Tiếp tục cố gắng nhé!';}
+  else if(pct>=60){star='👍';msg='Khá tốt! Ôn thêm một chút nhé!';}
+  else{star='💪';msg='Cần cố gắng thêm! Đừng bỏ cuộc!';}
+  document.getElementById('result-star').textContent=star;
+  document.getElementById('result-score').textContent=score+'/'+total;
+  document.getElementById('result-label').textContent=msg+' ('+pct+'%)';
+  show('screen-result');
+}
+
+function restartQuiz(){
+  show('screen-topic');
+  const quizTab = document.querySelectorAll('.tab')[1];
+  switchTab('quiz', quizTab);
+}
+
+renderTopics();
+</script>
